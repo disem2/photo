@@ -7,9 +7,8 @@ var bodyParser = require('body-parser');
 var db = require('./db');
 var mongoose = require('mongoose');
 var passport = require('passport');
-var expressSession = require('express-session');
+var flash = require('connect-flash');
 
-var routes = require('./routes/index');
 
 var app = express();
 
@@ -17,7 +16,7 @@ var app = express();
 mongoose.connect(db.url);
 
 // Configuring Passport
-app.use(expressSession({secret: 'qqq'}));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -37,6 +36,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var routes = require('./routes/index')(passport);
 app.use('/', routes);
 
 // catch 404 and forward to error handler
